@@ -9,7 +9,7 @@
 - Text Bubbles
   - Dialouge with the clock prompted by clicking on it. Getting choices for interative speech. 
 - Belly Clock
-  - Pop up of the clock on the CitKat Clocks belly that shows the local time on your computer at all times.  
+  - Pop up of the clock on the CitKat Clocks belly that shows the local time on your computer at all times. 
  
 ## Challenges
 - Learn and read all the possiblites/capabilites of the Tkinter python library, and actually implement in a functinal manner into my own code. 
