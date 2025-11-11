@@ -7,21 +7,21 @@ https://github.com/Kespriu/Final_Project-CitKat_Clock.git
 - Pinned to Screen
   - Pinning and moving the desktop toy/ CitKat clock to the top of your screen over any program. 
 - Text Bubbles
-  - Dialouge with the clock prompted by clicking on it. Getting choices for interative speech. 
+  -	Dialogue with the clock prompted by clicking on it. Getting choices for interactive speech. 
 - Belly Clock
   - Pop up of the clock on the CitKat Clocks belly that shows the local time on your computer at all times. 
  
 ## Challenges
-- Learn and read all the possiblites/capabilites of the Tkinter python library, and actually implement in a functinal manner into my own code. 
+- Learn and read all the possibilities/capabilities of the Tkinter python library, and actually implement in a functional manner into my own code. 
 - Learn how to animate through code and make my desktop toy move and interact with the user. I also to research through what library I could achieve that. 
 - Writing code that interacts with the operating system/desktop. 
 
 ## Outcomes
 Ideal Outcome:
-- To make a desktop toy in the form of a CitKat Clock (with a moustache) that is animated, it's tail and eyes swishing back and forth until it's clicked on. I want it to tell the time through a clock on it's stomach (an analouge clock) and for the time to be the same as the computers local time. I want the Kat to be pinable to your screen and for it to be visible above every program open on your computer. Finally, I want the Kat to have dialouge bubbles appear when clicked on where it's response is differnt depending on where it's clicked on. 
+- To make a desktop toy in the form of a CitKat Clock (with a moustache) that is animated, it's tail and eyes swishing back and forth until it's clicked on. I want it to tell the time through a clock on it's stomach (an analogue clock) and for the time to be the same as the computers local time. I want the Kat to be pinable to your screen and for it to be visible above every program open on your computer. Finally, I want the Kat to have dialogue bubbles appear when clicked on where it's response is different depending on where it's clicked on. 
 
 Minimal Viable Outcome:
-- To make a minimally animated CitKat clock desktop toy that can tell you the time, have simple dialouge, and be pinned to your screen. 
+- To make a minimally animated CitKat clock desktop toy that can tell you the time, have simple dialogue, and be pinned to your screen. 
 
 ## Milestones
 
@@ -31,7 +31,7 @@ Minimal Viable Outcome:
 
 - Week 2
   1. Goal 1 - Implementing the text bubbles and having them pop up when the Kat is clicked on. 
-  2. Goal 2 - Making dialouge options for said text bubbles. 
+  2. Goal 2 - Making dialogue options for said text bubbles. 
 
 - Week 3 (Final)
   1. Goal 1 - Getting the clock on the Kats Tummy to tell the time and show it in real time through animation. 
