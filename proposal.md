@@ -1,7 +1,7 @@
 # Final-Project - CitKat Clock
 
 ## Repository
-
+https://github.com/Kespriu/Final_Project-CitKat_Clock.git
 
 ## Features
 - Pinned to Screen
