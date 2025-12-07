@@ -22,7 +22,9 @@ class ClockImageImport():
         exit_button_img_path = os.path.join(base, "..", "Imports", "ExitButton.png")
         move_button_img_path = os.path.join(base, "..", "Imports", "MoveButton.png")
 
-        root = tk.Tk(className="CitKatClock")
+        root = tk.Tk()
+        root.title("CitKat Clock")
+        root.attributes("-topmost", True)
 
         # Window starts in bottom right corner
         root.geometry("-0-50")
@@ -50,9 +52,9 @@ class ClockImageImport():
         small_cat = PIL.Image.open(clock_img_path)
         small_cat = small_cat.resize((132, 417), PIL.Image.Resampling.NEAREST)
         small_cat_image = PIL.ImageTk.PhotoImage(small_cat)
-        canvas = tk.Canvas(width=small_cat.width + 100, height=small_cat.height + 100, bg='magenta', highlightthickness=0)
+        canvas = tk.Canvas(width=small_cat.width, height=small_cat.height, bg='magenta', highlightthickness=0)
         canvas.grid(column=0, row=1, sticky='nw')
-        canvas.create_image(50, 50, anchor=tk.NW, image=small_cat_image)
+        canvas.create_image(0, 0, anchor=tk.NW, image=small_cat_image)
 
         root.mainloop()
 
@@ -91,6 +93,7 @@ class Pinning():
 
     def __init__(self):
         pass
+        
 
 def get_time():
     return time.strftime("%I:%M:%S %p", time.localtime())
