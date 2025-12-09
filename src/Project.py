@@ -65,18 +65,30 @@ class ClockImageImport():
 
         scale_amount = 3
 
-        small_cat = small_cat.resize((small_cat.width * scale_amount, small_cat.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        big_clock = big_clock.resize((big_clock.width * scale_amount, big_clock.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        eyes = eyes.resize((eyes.width * scale_amount, eyes.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        tail = tail.resize((tail.width * scale_amount, tail.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        nose = nose.resize((nose.width * scale_amount, nose.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        bowtie = bowtie.resize((bowtie.width * scale_amount, bowtie.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        big_arrow = big_arrow.resize((big_arrow.width * scale_amount, big_arrow.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        small_arrow = small_arrow.resize((small_arrow.width * scale_amount, small_arrow.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        big_big_arrow = big_big_arrow.resize((big_big_arrow.width * scale_amount, big_big_arrow.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        big_small_arrow = big_small_arrow.resize((big_small_arrow.width * scale_amount, big_small_arrow.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        speech_bubble = speech_bubble.resize((speech_bubble.width * scale_amount, speech_bubble.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        speech_bubble_purple = speech_bubble_purple.resize((speech_bubble_purple.width * scale_amount, speech_bubble_purple.height * scale_amount), PIL.Image.Resampling.NEAREST)
+        small_cat = small_cat.resize((small_cat.width * scale_amount, small_cat.height * scale_amount),
+                                      PIL.Image.Resampling.NEAREST)
+        big_clock = big_clock.resize((big_clock.width * scale_amount, big_clock.height * scale_amount), 
+                                     PIL.Image.Resampling.NEAREST)
+        eyes = eyes.resize((eyes.width * scale_amount, eyes.height * scale_amount), PIL.Image.Resampling.
+                           NEAREST)
+        tail = tail.resize((tail.width * scale_amount, tail.height * scale_amount), PIL.Image.Resampling.
+                           NEAREST)
+        nose = nose.resize((nose.width * scale_amount, nose.height * scale_amount), PIL.Image.Resampling.
+                           NEAREST)
+        bowtie = bowtie.resize((bowtie.width * scale_amount, bowtie.height * scale_amount), PIL.Image.
+                               Resampling.NEAREST)
+        big_arrow = big_arrow.resize((big_arrow.width * scale_amount, big_arrow.height * scale_amount), 
+                                     PIL.Image.Resampling.NEAREST)
+        small_arrow = small_arrow.resize((small_arrow.width * scale_amount, small_arrow.height * scale_amount), 
+                                         PIL.Image.Resampling.NEAREST)
+        big_big_arrow = big_big_arrow.resize((big_big_arrow.width * scale_amount, big_big_arrow.height *
+                                               scale_amount), PIL.Image.Resampling.NEAREST)
+        big_small_arrow = big_small_arrow.resize((big_small_arrow.width * scale_amount, big_small_arrow.height
+                                                   * scale_amount), PIL.Image.Resampling.NEAREST)
+        speech_bubble = speech_bubble.resize((speech_bubble.width * scale_amount, speech_bubble.height * scale_amount), 
+                                             PIL.Image.Resampling.NEAREST)
+        speech_bubble_purple = speech_bubble_purple.resize((speech_bubble_purple.width * scale_amount, speech_bubble_purple.height
+                                                             * scale_amount), PIL.Image.Resampling.NEAREST)
 
         # Create transparent spacer image for speech bubble alignment
         spacer_image = PIL.Image.new("RGBA", (speech_bubble.width, speech_bubble.height), (0, 0, 0, 0))
@@ -488,14 +500,18 @@ class DialogueChoices():
         scale_amount = 3
 
         # Load and resize speech bubble images
-        speech_bubble_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Imports", "SpeechBubble.png")
-        speech_bubble_purple_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Imports", "SpeechBubblePurple.png")
+        speech_bubble_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                           "..", "Imports", "SpeechBubble.png")
+        speech_bubble_purple_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                                 "..", "Imports", "SpeechBubblePurple.png")
 
         speech_bubble = PIL.Image.open(speech_bubble_path)
         speech_bubble_purple = PIL.Image.open(speech_bubble_purple_path)
 
-        speech_bubble = speech_bubble.resize((speech_bubble.width * scale_amount, speech_bubble.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        speech_bubble_purple = speech_bubble_purple.resize((speech_bubble_purple.width * scale_amount, speech_bubble_purple.height * scale_amount), PIL.Image.Resampling.NEAREST)
+        speech_bubble = speech_bubble.resize((speech_bubble.width * scale_amount, speech_bubble.height * 
+                                              scale_amount), PIL.Image.Resampling.NEAREST)
+        speech_bubble_purple = speech_bubble_purple.resize((speech_bubble_purple.width * scale_amount, speech_bubble_purple.height
+                                                             * scale_amount), PIL.Image.Resampling.NEAREST)
 
         self.speech_bubble_image = PIL.ImageTk.PhotoImage(speech_bubble)
         self.speech_bubble_image_2 = PIL.ImageTk.PhotoImage(speech_bubble_purple)
