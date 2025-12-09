@@ -10,15 +10,19 @@ class ClockImageImport():
         base = os.path.dirname(os.path.abspath(__file__))
         
         clock_img_path = os.path.join(base, "..", "Imports", "CitKatClock.png")
+        big_clock_img_path = os.path.join(base, "..", "Imports", "BigClock.png")
         eyes_img_path = os.path.join(base, "..", "Imports", "Eyes.png")
         tail_img_path = os.path.join(base, "..", "Imports", "Tail.png")
         nose_img_path = os.path.join(base, "..", "Imports", "Nose.png")
+        bowtie_img_path = os.path.join(base, "..", "Imports", "Bowtie.png")
         
         exit_button_img_path = os.path.join(base, "..", "Imports", "ExitButton.png")
         move_button_img_path = os.path.join(base, "..", "Imports", "MoveButton.png")
 
         big_arrow_img_path = os.path.join(base, "..", "Imports", "BigArrow.png")
         small_arrow_img_path = os.path.join(base, "..", "Imports", "SmallArrow.png")
+        big_big_arrow_img_path = os.path.join(base, "..", "Imports", "BigBigArrow.png")
+        big_small_arrow_img_path = os.path.join(base, "..", "Imports", "BigSmallArrow.png")
 
         speech_bubble_img_path = os.path.join(base, "..", "Imports", "SpeechBubble.png")
         speech_bubble_purple_img_path = os.path.join(base, "..", "Imports", "SpeechBubblePurple.png")
@@ -47,22 +51,30 @@ class ClockImageImport():
         move_button_label.bind("<B1-Motion>", self.on_move)
         
         small_cat = PIL.Image.open(clock_img_path)
+        big_clock = PIL.Image.open(big_clock_img_path)
         eyes = PIL.Image.open(eyes_img_path)
         tail = PIL.Image.open(tail_img_path)
         nose = PIL.Image.open(nose_img_path)
+        bowtie = PIL.Image.open(bowtie_img_path)
         big_arrow = PIL.Image.open(big_arrow_img_path)
         small_arrow = PIL.Image.open(small_arrow_img_path)
+        big_big_arrow = PIL.Image.open(big_big_arrow_img_path)
+        big_small_arrow = PIL.Image.open(big_small_arrow_img_path)
         speech_bubble = PIL.Image.open(speech_bubble_img_path)
         speech_bubble_purple = PIL.Image.open(speech_bubble_purple_img_path)
 
         scale_amount = 3
 
         small_cat = small_cat.resize((small_cat.width * scale_amount, small_cat.height * scale_amount), PIL.Image.Resampling.NEAREST)
+        big_clock = big_clock.resize((big_clock.width * scale_amount, big_clock.height * scale_amount), PIL.Image.Resampling.NEAREST)
         eyes = eyes.resize((eyes.width * scale_amount, eyes.height * scale_amount), PIL.Image.Resampling.NEAREST)
         tail = tail.resize((tail.width * scale_amount, tail.height * scale_amount), PIL.Image.Resampling.NEAREST)
         nose = nose.resize((nose.width * scale_amount, nose.height * scale_amount), PIL.Image.Resampling.NEAREST)
+        bowtie = bowtie.resize((bowtie.width * scale_amount, bowtie.height * scale_amount), PIL.Image.Resampling.NEAREST)
         big_arrow = big_arrow.resize((big_arrow.width * scale_amount, big_arrow.height * scale_amount), PIL.Image.Resampling.NEAREST)
         small_arrow = small_arrow.resize((small_arrow.width * scale_amount, small_arrow.height * scale_amount), PIL.Image.Resampling.NEAREST)
+        big_big_arrow = big_big_arrow.resize((big_big_arrow.width * scale_amount, big_big_arrow.height * scale_amount), PIL.Image.Resampling.NEAREST)
+        big_small_arrow = big_small_arrow.resize((big_small_arrow.width * scale_amount, big_small_arrow.height * scale_amount), PIL.Image.Resampling.NEAREST)
         speech_bubble = speech_bubble.resize((speech_bubble.width * scale_amount, speech_bubble.height * scale_amount), PIL.Image.Resampling.NEAREST)
         speech_bubble_purple = speech_bubble_purple.resize((speech_bubble_purple.width * scale_amount, speech_bubble_purple.height * scale_amount), PIL.Image.Resampling.NEAREST)
 
@@ -75,13 +87,19 @@ class ClockImageImport():
 
         self.spacer_label.grid()
         
+        
         big_arrow_source = self.make_pivot_image(big_arrow)
         small_arrow_source = self.make_pivot_image(small_arrow)
+        big_big_arrow_source = self.make_pivot_image(big_big_arrow)
+        big_small_arrow_source = self.make_pivot_image(big_small_arrow)
 
         tail_source_center_pivot = self.make_center_pivot_image(tail)
         nose_source_center_pivot = self.make_center_pivot_image(nose)
+        bowtie_source_center_pivot = self.make_center_pivot_image(bowtie)
+        
 
         self.nose_src = nose_source_center_pivot
+        self.bowtie_src = bowtie_source_center_pivot
 
         small_cat_image = PIL.ImageTk.PhotoImage(small_cat)
 
@@ -110,12 +128,17 @@ class ClockImageImport():
         nose_tk = PIL.ImageTk.PhotoImage(self.nose_src)
         nose_item = canvas.create_image(center_x, center_y, anchor=tk.CENTER)
         canvas.itemconfig(nose_item, image=nose_tk)
+        
+        bowtie_tk = PIL.ImageTk.PhotoImage(self.bowtie_src)
+        bowtie_item = canvas.create_image(center_x, center_y, anchor=tk.CENTER)
+        canvas.itemconfig(bowtie_item, image=bowtie_tk)
 
-        # Keep references
+        # refs
         self.nose_item = nose_item
+        self.bowtie_item = bowtie_item
 
-        # Bind nose click to toggle speech bubble
-        canvas.tag_bind(nose_item, "<Button-1>", self.on_nose_click)
+        self.canvas = canvas
+        canvas.bind("<Button-1>", self.on_canvas_click)
 
         big_arrow_item = canvas.create_image(clock_center_x, clock_center_y, anchor=tk.CENTER)
         small_arrow_item = canvas.create_image(clock_center_x, clock_center_y, anchor=tk.CENTER)
@@ -152,6 +175,25 @@ class ClockImageImport():
         # Initialize DialogueChoices
         self.dialogue_choices = DialogueChoices(root)
 
+        # Keep references for big clock and arrows
+        self.big_clock_tk = PIL.ImageTk.PhotoImage(big_clock)
+        self.big_big_arrow_source = big_big_arrow_source
+        self.big_small_arrow_source = big_small_arrow_source
+
+        # Create big clock and arrows (hidden initially)
+        self.big_clock_item = canvas.create_image(clock_center_x, clock_center_y, anchor=tk.CENTER)
+        self.big_big_arrow_item = canvas.create_image(clock_center_x, clock_center_y, anchor=tk.CENTER)
+        self.big_small_arrow_item = canvas.create_image(clock_center_x, clock_center_y, anchor=tk.CENTER)
+
+        # Hide big clock and arrows initially
+        canvas.itemconfig(self.big_clock_item, state="hidden")
+        canvas.itemconfig(self.big_big_arrow_item, state="hidden")
+        canvas.itemconfig(self.big_small_arrow_item, state="hidden")
+
+        # Track external big clock window/animation
+        self.big_clock_window = None
+        self.big_clock_animation = None
+
         root.mainloop()
 
     # Button click events
@@ -168,6 +210,12 @@ class ClockImageImport():
         x = event.x_root - self._drag_offset_x
         y = event.y_root - self._drag_offset_y
         root.geometry(f"+{x}+{y}")
+
+    def on_canvas_click(self, event):
+        if self._pointer_over_bowtie_sprite(event):
+            self.on_bowtie_click(event)
+        elif self._pointer_over_nose_sprite(event):
+            self.on_nose_click(event)
 
     def _pointer_over_nose_sprite(self, event):
         img_coords = self.canvas.coords(self.nose_item)
@@ -186,6 +234,23 @@ class ClockImageImport():
             return pixel[3] > 0 if len(pixel) == 4 else any(pixel)
         return False
 
+    def _pointer_over_bowtie_sprite(self, event):
+        img_coords = self.canvas.coords(self.bowtie_item)
+        if not img_coords:
+            return False
+
+        img_x, img_y = img_coords[0], img_coords[1]
+        dx = event.x - img_x
+        dy = event.y - img_y
+
+        px = int(dx + self.bowtie_src.width / 2)
+        py = int(dy + self.bowtie_src.height / 2)
+
+        if 0 <= px < self.bowtie_src.width and 0 <= py < self.bowtie_src.height:
+            pixel = self.bowtie_src.getpixel((px, py))
+            return pixel[3] > 0 if len(pixel) == 4 else any(pixel)
+        return False
+
     def on_nose_click(self, event):
         # Only toggle when the clicked pixel is on the nose sprite
         if not self._pointer_over_nose_sprite(event):
@@ -200,6 +265,97 @@ class ClockImageImport():
                 self.dialogue_choices.reset_ui()
 
         self.dialogue_choices.speech_bubble_visible = not self.dialogue_choices.speech_bubble_visible
+        
+    def on_bowtie_click(self, event):
+        if not self._pointer_over_bowtie_sprite(event):
+            return
+
+        if self.big_clock_window is not None and self.big_clock_window.winfo_exists():
+            self.big_clock_window.lift()
+            self.big_clock_window.focus_force()
+            return
+
+        # Get the dimensions of the main window
+        main_window_x = self.root.winfo_x()
+        main_window_y = self.root.winfo_y()
+        main_window_width = self.root.winfo_width()
+        main_window_height = self.root.winfo_height()
+
+        # Calculate the position to center the new window
+        big_clock_width = self.big_clock_tk.width()
+        big_clock_height = self.big_clock_tk.height()
+        new_window_x = main_window_x + (main_window_width - big_clock_width) // 2
+        new_window_y = main_window_y + (main_window_height - big_clock_height) // 2
+
+        # Create a new window for the big clock
+        big_clock_window = tk.Toplevel(self.root)
+        big_clock_window.title("Big Clock")
+        big_clock_window.attributes("-topmost", True)
+        big_clock_window.geometry(f"{big_clock_width}x{big_clock_height}+{new_window_x}+{new_window_y}")
+        big_clock_window.configure(bg='magenta')
+        big_clock_window.overrideredirect(True)
+        big_clock_window.wm_attributes('-transparentcolor', 'magenta')
+
+        # Create a new canvas for the big clock
+        big_canvas = tk.Canvas(
+            big_clock_window,
+            width=big_clock_width,
+            height=big_clock_height,
+            bg='magenta',
+            highlightthickness=0
+        )
+        big_canvas.pack()
+
+        # Add the big clock to the new canvas
+        big_clock_item = big_canvas.create_image(0, 0, anchor=tk.NW, image=self.big_clock_tk)
+
+        # Add the big arrows to the new canvas
+        big_big_arrow_item = big_canvas.create_image(big_clock_width // 2, big_clock_height // 2, anchor=tk.CENTER)
+        big_small_arrow_item = big_canvas.create_image(big_clock_width // 2, big_clock_height // 2, anchor=tk.CENTER)
+
+        # Initialize and start the big clock animation
+        big_clock_animation = ClockFaceAnimation(
+            canvas=big_canvas,
+            big_arrow_source=self.big_big_arrow_source,
+            small_arrow_source=self.big_small_arrow_source,
+            big_arrow_item=big_big_arrow_item,
+            small_arrow_item=big_small_arrow_item
+        )
+        big_clock_animation.start()
+
+        # Remember window and animation so we know one is open
+        self.big_clock_window = big_clock_window
+        self.big_clock_animation = big_clock_animation
+
+        # Add "Move" and "Close" buttons
+        move_button = tk.Label(big_clock_window, image=self.move_button_image, bg='magenta')
+        close_button = tk.Label(big_clock_window, image=self.exit_button_image, bg='magenta')
+
+        move_button.place(x=big_clock_width - 64, y=0)  # Adjust position for "Move" button
+        close_button.place(x=big_clock_width - 32, y=0)  # Adjust position for "Close" button
+
+        # Bind move and close functionality
+        move_button.bind("<Button-1>", lambda event: self.start_move_big_clock(event, big_clock_window))
+        move_button.bind("<B1-Motion>", lambda event: self.on_move_big_clock(event, big_clock_window))
+        close_button.bind("<Button-1>", lambda event: self.close_big_clock(big_clock_window, big_clock_animation))
+
+    def start_move_big_clock(self, event, window):
+        self._drag_offset_x = event.x_root - window.winfo_rootx()
+        self._drag_offset_y = event.y_root - window.winfo_rooty()
+
+    def on_move_big_clock(self, event, window):
+        x = event.x_root - self._drag_offset_x
+        y = event.y_root - self._drag_offset_y
+        window.geometry(f"+{x}+{y}")
+        
+    def close_big_clock(self, window, animation):
+        animation.stop()  # Stop the animation
+        window.destroy()  # Destroy the Toplevel window
+
+        # Clear tracking if this was the tracked window
+        if self.big_clock_window is window:
+            self.big_clock_window = None
+            self.big_clock_animation = None
 
     def make_pivot_image(self, arrow_img):
         w, h = arrow_img.size
