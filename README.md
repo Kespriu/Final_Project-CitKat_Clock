@@ -4,7 +4,7 @@
 Demo Video: <https://youtu.be/yG4zV_gJGCk>
 
 ## GitHub Repository
-GitHub Repo: <URL>
+GitHub Repo: <https://github.com/Kespriu/Final_Project-CitKat_Clock.git>
 
 ## Description
 

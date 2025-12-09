@@ -2,4 +2,8 @@ tkinter
 time
 PIL
 os
+<<<<<<< HEAD
 mathSS
+=======
+math
+>>>>>>> 33a2d8d8cee78ae79ca009a54a2de913a09222d2
