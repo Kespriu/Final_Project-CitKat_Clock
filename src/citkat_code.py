@@ -21,6 +21,7 @@ class ClockImageImport():
         small_arrow_img_path = os.path.join(base, "..", "Imports", "SmallArrow.png")
 
         speech_bubble_img_path = os.path.join(base, "..", "Imports", "SpeechBubble.png")
+        speech_bubble_purple_img_path = os.path.join(base, "..", "Imports", "SpeechBubblePurple.png")
 
         root = tk.Tk()
         root.title("CitKat Clock")
@@ -51,7 +52,8 @@ class ClockImageImport():
         nose = PIL.Image.open(nose_img_path)
         big_arrow = PIL.Image.open(big_arrow_img_path)
         small_arrow = PIL.Image.open(small_arrow_img_path)
-        temp_speech_bubble = PIL.Image.open(speech_bubble_img_path)
+        speech_bubble = PIL.Image.open(speech_bubble_img_path)
+        speech_bubble_purple = PIL.Image.open(speech_bubble_purple_img_path)
 
         scale_amount = 3
 
@@ -61,34 +63,24 @@ class ClockImageImport():
         nose = nose.resize((nose.width * scale_amount, nose.height * scale_amount), PIL.Image.Resampling.NEAREST)
         big_arrow = big_arrow.resize((big_arrow.width * scale_amount, big_arrow.height * scale_amount), PIL.Image.Resampling.NEAREST)
         small_arrow = small_arrow.resize((small_arrow.width * scale_amount, small_arrow.height * scale_amount), PIL.Image.Resampling.NEAREST)
-        temp_speech_bubble = temp_speech_bubble.resize((temp_speech_bubble.width * scale_amount, temp_speech_bubble.height * scale_amount), PIL.Image.Resampling.NEAREST)
+        speech_bubble = speech_bubble.resize((speech_bubble.width * scale_amount, speech_bubble.height * scale_amount), PIL.Image.Resampling.NEAREST)
+        speech_bubble_purple = speech_bubble_purple.resize((speech_bubble_purple.width * scale_amount, speech_bubble_purple.height * scale_amount), PIL.Image.Resampling.NEAREST)
 
-        # keep a reference to the image to avoid GC
-        speech_bubble_image = PIL.ImageTk.PhotoImage(temp_speech_bubble)
-        speech_bubble_label = tk.Label(root, image=speech_bubble_image, bg='magenta')
-        # Do NOT grid the speech bubble now — keep it hidden initially
-        self.speech_bubble_label = speech_bubble_label
-        self.speech_bubble_image = speech_bubble_image
-        self.speech_bubble_visible = False
+        # Create transparent spacer image for speech bubble alignment
+        spacer_image = PIL.Image.new("RGBA", (speech_bubble.width, speech_bubble.height), (0, 0, 0, 0))
+        self.spacer_image = PIL.ImageTk.PhotoImage(spacer_image)
 
-        # Create a transparent placeholder image
-        placeholder_image = PIL.Image.new("RGBA", (temp_speech_bubble.width, temp_speech_bubble.height), (0, 0, 0, 0))
-        self.placeholder_image = PIL.ImageTk.PhotoImage(placeholder_image)
+        self.spacer_label = tk.Label(root, image=self.spacer_image, bg='magenta')
+        self.spacer_label.grid(column=0, row=1, sticky='nw', padx=20)
 
-        # Create the placeholder label
-        self.placeholder_label = tk.Label(root, image=self.placeholder_image, bg='magenta')
-        self.placeholder_label.grid(column=0, row=1, sticky='nw', padx=20)
-
-        # Initially show the placeholder label
-        self.placeholder_label.grid()
-
+        self.spacer_label.grid()
+        
         big_arrow_source = self.make_pivot_image(big_arrow)
         small_arrow_source = self.make_pivot_image(small_arrow)
 
         tail_source_center_pivot = self.make_center_pivot_image(tail)
         nose_source_center_pivot = self.make_center_pivot_image(nose)
 
-        # store the nose source (PIL Image) for pixel-level hit tests
         self.nose_src = nose_source_center_pivot
 
         small_cat_image = PIL.ImageTk.PhotoImage(small_cat)
@@ -121,7 +113,6 @@ class ClockImageImport():
 
         # Keep references
         self.nose_item = nose_item
-        self.nose_tk = nose_tk
 
         # Bind nose click to toggle speech bubble
         canvas.tag_bind(nose_item, "<Button-1>", self.on_nose_click)
@@ -157,7 +148,9 @@ class ClockImageImport():
         self.exit_button_image = exit_button_image
         self.move_button_image = move_button_image
         self.eyes_tk = eyes_tk
-        self.tail_tk_initial = tail_tk_initial
+        
+        # Initialize DialogueChoices
+        self.dialogue_choices = DialogueChoices(root)
 
         root.mainloop()
 
@@ -198,14 +191,15 @@ class ClockImageImport():
         if not self._pointer_over_nose_sprite(event):
             return
 
-        if self.speech_bubble_visible:
-            self.speech_bubble_label.grid_remove()
-            self.placeholder_label.grid()  # Show the placeholder
+        if self.dialogue_choices.speech_bubble_visible:
+            self.dialogue_choices.hide_speech_bubbles()
         else:
-            self.speech_bubble_label.grid(column=0, row=1, sticky='nw', padx=20)
-            self.placeholder_label.grid_remove()  # Hide the placeholder
+            self.dialogue_choices.show_speech_bubbles()
+            
+            if self.dialogue_choices.date_label.cget("text") == "Return":
+                self.dialogue_choices.reset_ui()
 
-        self.speech_bubble_visible = not self.speech_bubble_visible
+        self.dialogue_choices.speech_bubble_visible = not self.dialogue_choices.speech_bubble_visible
 
     def make_pivot_image(self, arrow_img):
         w, h = arrow_img.size
@@ -329,9 +323,88 @@ class OtherAnimations():
             self.canvas.after(20, self.update)
 
 
-class DialougeChoices():
-    def __init__(self):
-        pass
+class DialogueChoices():
+    def __init__(self, root):
+        self.root = root
+        self.speech_bubble_visible = False
+
+        # Define scale amount for resizing
+        scale_amount = 3
+
+        # Load and resize speech bubble images
+        speech_bubble_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Imports", "SpeechBubble.png")
+        speech_bubble_purple_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Imports", "SpeechBubblePurple.png")
+
+        speech_bubble = PIL.Image.open(speech_bubble_path)
+        speech_bubble_purple = PIL.Image.open(speech_bubble_purple_path)
+
+        speech_bubble = speech_bubble.resize((speech_bubble.width * scale_amount, speech_bubble.height * scale_amount), PIL.Image.Resampling.NEAREST)
+        speech_bubble_purple = speech_bubble_purple.resize((speech_bubble_purple.width * scale_amount, speech_bubble_purple.height * scale_amount), PIL.Image.Resampling.NEAREST)
+
+        self.speech_bubble_image = PIL.ImageTk.PhotoImage(speech_bubble)
+        self.speech_bubble_image_2 = PIL.ImageTk.PhotoImage(speech_bubble_purple)
+        self.speech_bubble_image_3 = PIL.ImageTk.PhotoImage(speech_bubble_purple)
+
+        # Create speech bubble labels
+        self.speech_bubble_label = tk.Label(root, image=self.speech_bubble_image, bg='magenta')
+        self.speech_bubble_label_2 = tk.Label(root, image=self.speech_bubble_image_2, bg='magenta')
+        self.speech_bubble_label_3 = tk.Label(root, image=self.speech_bubble_image_3, bg='magenta')
+
+        # Add labels for text on top of each speech bubble
+        self.text_label = tk.Label(root, text="Hello Everynyan!", font=("Bahnschrift", 18), bg='white', fg='black')
+        self.date_label = tk.Label(root, text="Date", font=("Bahnschrift", 18), bg='#cb75f4', fg='black')
+        self.time_label = tk.Label(root, text="Time", font=("Bahnschrift", 18), bg='#cb75f4', fg='black')
+
+        # Initially hide all speech bubbles
+        self.hide_speech_bubbles()
+
+        # Bind click events
+        self.speech_bubble_label_2.bind("<Button-1>", self.on_speech_bubble_2_click)
+        self.speech_bubble_label_3.bind("<Button-1>", self.on_speech_bubble_3_click)
+
+    def show_speech_bubbles(self):
+        self.speech_bubble_label.place(x=30, y=35)
+        self.speech_bubble_label_2.place(x=30, y=105)
+        self.speech_bubble_label_3.place(x=30, y=175)
+
+        self.text_label.place(x=40, y=40)
+        self.date_label.place(x=40, y=110)
+        self.time_label.place(x=40, y=180)
+
+    def hide_speech_bubbles(self):
+        self.speech_bubble_label.place_forget()
+        self.speech_bubble_label_2.place_forget()
+        self.speech_bubble_label_3.place_forget()
+        self.text_label.place_forget()
+        self.date_label.place_forget()
+        self.time_label.place_forget()
+
+    def reset_ui(self):
+        self.show_speech_bubbles()
+        self.update_speech_bubble_text(self.text_label, "Hello Everynyan!")
+        self.update_speech_bubble_text(self.date_label, "Date")
+        self.update_speech_bubble_text(self.time_label, "Time")
+        self.speech_bubble_label_2.bind("<Button-1>", self.on_speech_bubble_2_click)
+
+    def update_speech_bubble_text(self, label, text):
+        label.config(text=text)
+
+    def on_speech_bubble_2_click(self, event):
+        self.update_speech_bubble_text(self.text_label, time.strftime("It's %D"))
+        self.speech_bubble_label_3.place_forget()
+        self.time_label.place_forget()
+        self.update_speech_bubble_text(self.date_label, "Return")
+        self.speech_bubble_label_2.bind("<Button-1>", self.on_return_click)
+
+    def on_speech_bubble_3_click(self, event):
+        self.update_speech_bubble_text(self.text_label, "It's " + get_time())
+        self.speech_bubble_label_3.place_forget()
+        self.time_label.place_forget()
+        self.update_speech_bubble_text(self.date_label, "Return")
+        self.speech_bubble_label_2.bind("<Button-1>", self.on_return_click)
+
+    def on_return_click(self, event):
+        self.reset_ui()
 
 def get_time():
     return time.strftime("%I:%M:%S %p", time.localtime())
